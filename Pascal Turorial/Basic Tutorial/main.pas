@@ -1,6 +1,7 @@
 // Definindo que isso é um algoritmo em Pascal
 program tutorial;
 
+// Definindo um novo tipo
 type
     md_array = array[1..10, 1..10] of integer; // Variável do tipo array bidimensional de inteiro(matriz)
 
