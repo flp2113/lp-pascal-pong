@@ -1,0 +1,23 @@
+cff-version: 1.0.0
+message: "If you use this content, please cite it as below."
+authors:
+- family-names: "Pereira"
+  given-names: "Caio César"
+  github: "https://github.com/caiocsper"
+  - family-names: "dos Santos"
+  given-names: "Diego Feitosa Ferreira"
+  github: "https://github.com/Sil3ncy"
+- family-names: "Maia"
+  given-names: "Felipe Guerzoni Martins Flôres"
+  github: "https://github.com/flp2113"
+- family-names: "Silva"
+  given-names: "Guilherme"
+  github: "https://github.com/guisilvas"
+- family-names: "Diniz"
+  given-names: "Mateus Henrique Medeiros"
+  github: "https://github.com/mateushmd"
+title: "Pascal's Seminar"
+version: 1.0.0
+description: "Algorithms developed for the first seminar of the Programming Languages ​​discipline at PUC-MG University on the Eucarístico campus, 1st period of 2025, taught by professor Marco Rodrigo Costa in the morning period."
+date-released: 2025-02-25
+url: "https://github.com/flp2113/lp-pascal-pong"
