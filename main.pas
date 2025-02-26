@@ -4,6 +4,12 @@ uses SysUtils, SDL2, SDL2_ttf;
 
 type
     windowState_t = (start, game);
+    verticalDirections = record
+        arrowSelector: integer;
+        p1: integer;
+        p2: integer;
+        ball: integer;
+    end;
 
 const
     WINDOW_TITLE    = 'Pascal Pong';
@@ -33,12 +39,9 @@ var
     border2Rect: TSDL_Rect;
     playerMiddle: integer = WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
     state: windowState_t = start;
-    lowerOption: boolean = false;
     lock: boolean = false;
     i: integer;
-    arrowYDirection: integer = 1;
-    player1YDirection: integer = 1;
-    player2YDirection: integer = 1;
+    yDirections: verticalDirections = (arrowSelector : 1; p1: 1; p2: 1);
 
 procedure setRectangle(var rect: TSDL_Rect; width, height, xPos, yPos: integer);
 begin
@@ -73,8 +76,8 @@ end;
 
 procedure toggleArrow();
 begin
-    arrowYDirection := arrowYDirection * -1;
-    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 + 80 * arrowYDirection, true);
+    yDirections.arrowSelector := yDirections.arrowSelector * -1;
+    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 + 80 * yDirections.arrowSelector, true);
 end;
 
 procedure update();
@@ -91,10 +94,10 @@ begin
 
             SDL_KEYDOWN:
                 case sdlEvent^.key.keysym.sym of
-                    SDLK_w: player1YDirection := -1;
-                    SDLK_s: player1YDirection := 1;
-                    SDLK_up: player2YDirection := -1;
-                    SDLK_down: player2YDirection := 1;
+                    SDLK_w: yDirections.p1 := -1;
+                    SDLK_s: yDirections.p1 := 1;
+                    SDLK_up: yDirections.p2 := -1;
+                    SDLK_down: yDirections.p2 := 1;
                 end;
         end;
     end;
@@ -115,14 +118,14 @@ begin
 
     // W S
     if (state = game) and ((keyboardState[SDL_SCANCODE_W] = 1) or (keyboardState[SDL_SCANCODE_S] = 1)) then
-        player1Rect.y := player1Rect.y + PLAYER_SPEED * player1YDirection;
+        player1Rect.y := player1Rect.y + PLAYER_SPEED * yDirections.p1;
 
     // ARROW_UP ARROW_DOWN
     if (keyboardState[SDL_SCANCODE_UP] = 1) or (keyboardState[SDL_SCANCODE_DOWN] = 1) then
     begin
         if state = game then
         begin
-            player2Rect.y := player2Rect.y + PLAYER_SPEED * player2YDirection;
+            player2Rect.y := player2Rect.y + PLAYER_SPEED * yDirections.p2;
             exit;
         end;
 
