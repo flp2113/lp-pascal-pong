@@ -21,6 +21,15 @@ var
     player2Rect: TSDL_Rect;
     border1Rect: TSDL_Rect;
     border2Rect: TSDL_Rect;
+    playerMiddle: integer = WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
+
+procedure setRectangle(var rect: TSDL_Rect; width, height, xPos, yPos: integer);
+begin
+    rect.w := width;
+    rect.h := height;
+    rect.x := xPos;
+    rect.y := yPos;
+end;
 
 begin
     if SDL_Init(SDL_INIT_VIDEO) < 0 then Exit;
@@ -31,25 +40,10 @@ begin
     renderer := SDL_CreateRenderer(window, -1, 0);
     if renderer = nil then Halt;
 
-    player1Rect.w := PLAYER_WIDTH;
-    player1Rect.h := PLAYER_HEIGHT;
-    player1Rect.x := 0 + OFFSET_BORDER;
-    player1Rect.y := WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
-
-    player2Rect.w := PLAYER_WIDTH;
-    player2Rect.h := PLAYER_HEIGHT;
-    player2Rect.x := WINDOW_WIDTH - OFFSET_BORDER;
-    player2Rect.y := WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
-
-    border1Rect.w := PLAYER_WIDTH;
-    border1Rect.h := WINDOW_HEIGHT;
-    border1Rect.x := 0;
-    border1Rect.y := 0;
-
-    border2Rect.w := PLAYER_WIDTH;
-    border2Rect.h := WINDOW_HEIGHT;
-    border2Rect.x := WINDOW_WIDTH - PLAYER_WIDTH;
-    border2Rect.y := 0;
+    setRectangle(player1Rect, PLAYER_WIDTH, PLAYER_HEIGHT, 0 + OFFSET_BORDER, playerMiddle);
+    setRectangle(player2Rect, PLAYER_WIDTH, PLAYER_HEIGHT, WINDOW_WIDTH - OFFSET_BORDER, playerMiddle);
+    setRectangle(border1Rect, PLAYER_WIDTH, WINDOW_HEIGHT, 0, 0);
+    setRectangle(border2Rect, PLAYER_WIDTH, WINDOW_HEIGHT, WINDOW_WIDTH - PLAYER_WIDTH, 0);
 
     keyboardState := SDL_GetKeyboardState(nil);
     Running := True;
