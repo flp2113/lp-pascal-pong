@@ -6,14 +6,21 @@ const
     WINDOW_TITLE    = 'Pascal Pong';
     WINDOW_WIDTH    = 1280;
     WINDOW_HEIGHT   = 720;
+    OFFSET_BORDER   = 100;
+    PLAYER_WIDTH    = 15;
+    PLAYER_HEIGHT   = 150;
+    PLAYER_SPEED    = 5;
 
 var
     sdlEvent: PSDL_Event;
     Running: Boolean;
     window: PSDL_Window;
     renderer: PSDL_Renderer;
-    rect: TSDL_Rect;
     keyboardState: PUInt8;
+    player1Rect: TSDL_Rect;
+    player2Rect: TSDL_Rect;
+    border1Rect: TSDL_Rect;
+    border2Rect: TSDL_Rect;
 
 begin
     if SDL_Init(SDL_INIT_VIDEO) < 0 then Exit;
@@ -24,11 +31,25 @@ begin
     renderer := SDL_CreateRenderer(window, -1, 0);
     if renderer = nil then Halt;
 
-    // PREPARE RECT
-    rect.x := 300;
-    rect.y := 200;
-    rect.w := 100;
-    rect.h := 50;
+    player1Rect.w := PLAYER_WIDTH;
+    player1Rect.h := PLAYER_HEIGHT;
+    player1Rect.x := 0 + OFFSET_BORDER;
+    player1Rect.y := WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
+
+    player2Rect.w := PLAYER_WIDTH;
+    player2Rect.h := PLAYER_HEIGHT;
+    player2Rect.x := WINDOW_WIDTH - OFFSET_BORDER;
+    player2Rect.y := WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
+
+    border1Rect.w := PLAYER_WIDTH;
+    border1Rect.h := WINDOW_HEIGHT;
+    border1Rect.x := 0;
+    border1Rect.y := 0;
+
+    border2Rect.w := PLAYER_WIDTH;
+    border2Rect.h := WINDOW_HEIGHT;
+    border2Rect.x := WINDOW_WIDTH - PLAYER_WIDTH;
+    border2Rect.y := 0;
 
     keyboardState := SDL_GetKeyboardState(nil);
     Running := True;
@@ -51,13 +72,13 @@ begin
 
         // WASD
         if keyboardState[SDL_SCANCODE_W] = 1 then
-        rect.y := rect.y - 1;
-        if keyboardState[SDL_SCANCODE_A] = 1 then
-        rect.x := rect.x - 1;
+        player1Rect.y := player1Rect.y - PLAYER_SPEED;
         if keyboardState[SDL_SCANCODE_S] = 1 then
-        rect.y := rect.y + 1;
-        if keyboardState[SDL_SCANCODE_D] = 1 then
-        rect.x := rect.x + 1;
+        player1Rect.y := player1Rect.y + PLAYER_SPEED;
+        if keyboardState[SDL_SCANCODE_UP] = 1 then
+        player2Rect.y := player2Rect.y - PLAYER_SPEED;
+        if keyboardState[SDL_SCANCODE_DOWN] = 1 then
+        player2Rect.y := player2Rect.y + PLAYER_SPEED;
 
         // BACKGROUND
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
@@ -65,8 +86,11 @@ begin
 
         // RECT
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-        SDL_RenderFillRect(renderer, @rect);
-        //SDL_RenderDrawRect(renderer, @rect);
+        SDL_RenderFillRect(renderer, @player1Rect);
+        SDL_RenderFillRect(renderer, @player2Rect);
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        SDL_RenderFillRect(renderer, @border1Rect);
+        SDL_RenderFillRect(renderer, @border2Rect);
 
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
@@ -74,6 +98,5 @@ begin
     
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-
     SDL_Quit;
 end.
