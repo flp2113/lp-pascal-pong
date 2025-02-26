@@ -14,33 +14,32 @@ var
     age: integer;   // Variável do tipo inteiro
     res: boolean;   // Variável do tipo boolean
 
-// Função 
-function ageTest(age: integer): boolean;
+// Declaração da função
+function ageTest(age: integer): boolean; 
 var
-    result: boolean;
+    result: boolean; // Resultado da função
 begin
-    if (age >= 18) then
+    if (age >= 18) then // Condicional
         result := true
     else
         result := false;
 
-    ageTest := result;
+    ageTest := result; // Retorno
 end;
 
+// Bloco principal
 Begin
     writeln('Enter your name: ');
-    //flush(output);   // Force output to display before input
-    readln(name);    // Read user input
+    readln(name);   // Recebe um nome
 
     writeln('Enter your age: ');
-    //flush(output);
-    readln(age);
+    readln(age);    // Recebe uma idade
 
     res := ageTest(age);
+    write('Are you of legal age? ');
     if res then
         writeln('YES')
     else
         writeln('NO');
 
-    writeln('This is my program.');
-End.
+End. // Fim do bloco principal
