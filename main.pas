@@ -64,15 +64,17 @@ begin
         if keyboardState[SDL_SCANCODE_ESCAPE] = 1 then
         Running := False;
 
-        // WASD
+        // W S
         if keyboardState[SDL_SCANCODE_W] = 1 then
-        player1Rect.y := player1Rect.y - PLAYER_SPEED;
+            player1Rect.y := player1Rect.y - PLAYER_SPEED;
         if keyboardState[SDL_SCANCODE_S] = 1 then
-        player1Rect.y := player1Rect.y + PLAYER_SPEED;
+            player1Rect.y := player1Rect.y + PLAYER_SPEED;
+
+        // ARROW_UP ARROW_DOWN
         if keyboardState[SDL_SCANCODE_UP] = 1 then
-        player2Rect.y := player2Rect.y - PLAYER_SPEED;
+            player2Rect.y := player2Rect.y - PLAYER_SPEED;
         if keyboardState[SDL_SCANCODE_DOWN] = 1 then
-        player2Rect.y := player2Rect.y + PLAYER_SPEED;
+            player2Rect.y := player2Rect.y + PLAYER_SPEED;
 
         // BACKGROUND
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
@@ -82,7 +84,7 @@ begin
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderFillRect(renderer, @player1Rect);
         SDL_RenderFillRect(renderer, @player2Rect);
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
         SDL_RenderFillRect(renderer, @border1Rect);
         SDL_RenderFillRect(renderer, @border2Rect);
 
