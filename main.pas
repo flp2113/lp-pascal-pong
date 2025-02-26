@@ -36,6 +36,7 @@ var
     lowerOption: boolean = false;
     lock: boolean = false;
     i: integer;
+    arrowYDirection: integer = 1;
 
 procedure setRectangle(var rect: TSDL_Rect; width, height, xPos, yPos: integer);
 begin
@@ -68,6 +69,12 @@ begin
     end;
 end;
 
+procedure toggleArrow();
+begin
+    arrowYDirection := arrowYDirection * -1;
+    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 + 80 * arrowYDirection, true);
+end;
+
 procedure update();
 begin
     new(sdlEvent);
@@ -87,51 +94,50 @@ begin
     // EXIT BY PRESSING ESC
     if keyboardState[SDL_SCANCODE_ESCAPE] = 1 then
         Running := False;
+    
+    if keyboardState[SDL_SCANCODE_RETURN] = 1 then begin
+        state := game;
+
+        for i := 0 to MAX_TEXTS - 1 do    
+            SDL_DestroyTexture(textTextures[i]);
+    end;
 
     // W S
     if (state = game) and (keyboardState[SDL_SCANCODE_W] = 1) then
         player1Rect.y := player1Rect.y - PLAYER_SPEED;
+
     if (state = game) and (keyboardState[SDL_SCANCODE_S] = 1) then
         player1Rect.y := player1Rect.y + PLAYER_SPEED;
 
     // ARROW_UP ARROW_DOWN
     if keyboardState[SDL_SCANCODE_UP] = 1 then
     begin
-        if state = start then
+        if state = game then
         begin
-            if not lock then
-            begin
-                lowerOption := false;
-                if lowerOption then
-                    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 + 80, true)
-                else
-                    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 - 80, true);
-
-                lock := true;
-            end;
-        end
-        else
             player2Rect.y := player2Rect.y - PLAYER_SPEED;
-    end;
+            exit;
+        end;
 
+        if not lock then
+        begin
+            toggleArrow();
+            lock := true;
+        end;
+    end;
 
     if keyboardState[SDL_SCANCODE_DOWN] = 1 then
     begin
-        if state = start then
+        if state = game then
         begin
-            if not lock then
-            begin
-                lowerOption := true;
-                if lowerOption then
-                    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 + 80, true)
-                else
-                    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 - 80, true);
-
-                lock := true;
-            end;
-        end
-        else
             player2Rect.y := player2Rect.y + PLAYER_SPEED;
+            exit;
+        end;
+
+        if not lock then
+        begin
+            toggleArrow();
+            lock := true;
+        end;
     end;
 end;
 
@@ -196,7 +202,7 @@ begin
 
     updateText(0, 'Um jogador', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 - 80, true);
     updateText(1, 'Dois jogadores', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 80, true);
-    updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 - 80, true);
+    toggleArrow();
 
     setRectangle(player1Rect, PLAYER_WIDTH, PLAYER_HEIGHT, 0 + OFFSET_BORDER, playerMiddle);
     setRectangle(player2Rect, PLAYER_WIDTH, PLAYER_HEIGHT, WINDOW_WIDTH - OFFSET_BORDER, playerMiddle);
