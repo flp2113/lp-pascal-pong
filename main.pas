@@ -37,6 +37,8 @@ var
     lock: boolean = false;
     i: integer;
     arrowYDirection: integer = 1;
+    player1YDirection: integer = 1;
+    player2YDirection: integer = 1;
 
 procedure setRectangle(var rect: TSDL_Rect; width, height, xPos, yPos: integer);
 begin
@@ -86,6 +88,14 @@ begin
 
             SDL_KEYUP:
                 lock := false;
+
+            SDL_KEYDOWN:
+                case sdlEvent^.key.keysym.sym of
+                    SDLK_w: player1YDirection := -1;
+                    SDLK_s: player1YDirection := 1;
+                    SDLK_up: player2YDirection := -1;
+                    SDLK_down: player2YDirection := 1;
+                end;
         end;
     end;
 
@@ -95,41 +105,24 @@ begin
     if keyboardState[SDL_SCANCODE_ESCAPE] = 1 then
         Running := False;
     
+    // START GAME AND CLEAR MENU
     if keyboardState[SDL_SCANCODE_RETURN] = 1 then begin
         state := game;
 
-        for i := 0 to MAX_TEXTS - 1 do    
+        for i := 0 to MAX_TEXTS - 1 do
             SDL_DestroyTexture(textTextures[i]);
     end;
 
     // W S
-    if (state = game) and (keyboardState[SDL_SCANCODE_W] = 1) then
-        player1Rect.y := player1Rect.y - PLAYER_SPEED;
-
-    if (state = game) and (keyboardState[SDL_SCANCODE_S] = 1) then
-        player1Rect.y := player1Rect.y + PLAYER_SPEED;
+    if (state = game) and ((keyboardState[SDL_SCANCODE_W] = 1) or (keyboardState[SDL_SCANCODE_S] = 1)) then
+        player1Rect.y := player1Rect.y + PLAYER_SPEED * player1YDirection;
 
     // ARROW_UP ARROW_DOWN
-    if keyboardState[SDL_SCANCODE_UP] = 1 then
+    if (keyboardState[SDL_SCANCODE_UP] = 1) or (keyboardState[SDL_SCANCODE_DOWN] = 1) then
     begin
         if state = game then
         begin
-            player2Rect.y := player2Rect.y - PLAYER_SPEED;
-            exit;
-        end;
-
-        if not lock then
-        begin
-            toggleArrow();
-            lock := true;
-        end;
-    end;
-
-    if keyboardState[SDL_SCANCODE_DOWN] = 1 then
-    begin
-        if state = game then
-        begin
-            player2Rect.y := player2Rect.y + PLAYER_SPEED;
+            player2Rect.y := player2Rect.y + PLAYER_SPEED * player2YDirection;
             exit;
         end;
 
