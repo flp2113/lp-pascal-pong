@@ -39,6 +39,8 @@ var
     lowerOption: boolean = false;
     lock: boolean = false;
     i: integer;
+    ballDx: integer = 5;
+    ballDy: integer = 5;
 
 procedure setRectangle(var rect: TSDL_Rect; width, height, xPos, yPos: integer);
 begin
@@ -82,19 +84,37 @@ begin
         textsVisible[i] := not textsVisible[i];
 end;
 
-procedure boundCheck();
+procedure playerBoundCheck(var player: TSDL_Rect);
 begin
-    // PLAYER 1
-    if player1Rect.y <= 0 then player1Rect.y := 0;
-    if player1Rect.y >= 570 then player1Rect.y := 570;
+    if (player.y <= 0) then player.y := 0;
+    if (player.y >= 570) then player.y := 570;
+end;
 
-    // PLAYER 2
-    if player2Rect.y <= 0 then player2Rect.y := 0;
-    if player2Rect.y >= 570 then player2Rect.y := 570;
+procedure ballWallCollision(var ball: TSDL_Rect);
+begin
+    if (ball.y - ball.h <= 0) or (ball.y + ball.h >= WINDOW_HEIGHT) then
+        ballDy := -ballDy;
+end;
 
-    // BALL
-    if ball.y <= 0 then ball.y := 0;
-    if ball.y >= 570 then ball.y := 570;
+procedure ballPlayerCollision(player: TSDL_Rect);
+begin
+    if (ball.x + ball.w >= player.x) and
+       (ball.x - ball.w <= player.x + player.w) and
+       (ball.y + ball.h >= player.y) and
+       (ball.y - ball.h <= player.y + player.h)
+    then
+    begin
+        ballDx := -ballDx;
+        ballDx := Round(ballDx * 1.05);
+        ballDy := Round(ballDy * 1.05);
+    end;
+end;
+
+procedure ballUpdate();
+begin
+    ballWallCollision(ball);
+    ballPlayerCollision(player1Rect);
+    ballPlayerCollision(player2Rect);
 end;
 
 procedure update();
@@ -110,6 +130,12 @@ begin
                 lock := false;
         end;
     end;
+
+    // START BALL
+    if state = game then
+        ball.x := ball.x - ballDx;
+        ball.y := ball.y + ballDy;
+        //Writeln(ball.x);
 
     SDL_PumpEvents;
     
@@ -194,7 +220,13 @@ begin
         end;
     end;
 
-    boundCheck;
+    // PLAYERS AND BALL UPDATE/CHECK
+    if state = game then
+    begin
+        ballUpdate;
+        playerBoundCheck(player1Rect);
+        playerBoundCheck(player2Rect);
+    end;
 end;
 
 procedure renderStart();
