@@ -13,7 +13,9 @@ const
     PLAYER_WIDTH    = 15;
     PLAYER_HEIGHT   = 150;
     PLAYER_SPEED    = 5;
-    MAX_TEXTS = 3;
+    BOT_SPEED       = 3;
+    BALL_SCALE      = 10;
+    MAX_TEXTS       = 3;
 
 var
     sdlEvent: PSDL_Event;
@@ -31,6 +33,7 @@ var
     player2Rect: TSDL_Rect;
     border1Rect: TSDL_Rect;
     border2Rect: TSDL_Rect;
+    ball: TSDL_Rect;
     playerMiddle: integer = WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
     state: windowState_t = start;
     lowerOption: boolean = false;
@@ -50,6 +53,11 @@ begin
     if textTextures[index] <> nil then
         SDL_DestroyTexture(textTextures[index]);
 
+    textColor.r := 255;
+    textColor.g := 255;
+    textColor.b := 255;
+    textColor.a := 255;
+
     textSurface := TTF_RenderText_Solid(font, PChar(AnsiString(text)), textColor);
 
     textTextures[index] := SDL_CreateTextureFromSurface(renderer, textSurface);
@@ -66,6 +74,27 @@ begin
         textRects[index].x := textRects[index].x - textRects[index].w div 2;
         textRects[index].y := textRects[index].y - textRects[index].h div 2;
     end;
+end;
+
+procedure toggleText();
+begin
+    for i := 0 to MAX_TEXTS - 1 do
+        textsVisible[i] := not textsVisible[i];
+end;
+
+procedure boundCheck();
+begin
+    // PLAYER 1
+    if player1Rect.y <= 0 then player1Rect.y := 0;
+    if player1Rect.y >= 570 then player1Rect.y := 570;
+
+    // PLAYER 2
+    if player2Rect.y <= 0 then player2Rect.y := 0;
+    if player2Rect.y >= 570 then player2Rect.y := 570;
+
+    // BALL
+    if ball.y <= 0 then ball.y := 0;
+    if ball.y >= 570 then ball.y := 570;
 end;
 
 procedure update();
@@ -111,9 +140,13 @@ begin
             end;
         end
         else
-            player2Rect.y := player2Rect.y - PLAYER_SPEED;
+            // IF 1 PLAYER SELECTED, IT WONT BE POSSIBLE TO MOVE THE SECOND RECT
+            if lowerOption then
+                player2Rect.y := player2Rect.y - PLAYER_SPEED
+            else
+                // IMPLEMENT BOT MOVEMENT   
+                Writeln('1 player selected');
     end;
-
 
     if keyboardState[SDL_SCANCODE_DOWN] = 1 then
     begin
@@ -131,8 +164,37 @@ begin
             end;
         end
         else
-            player2Rect.y := player2Rect.y + PLAYER_SPEED;
+            // IF 1 PLAYER SELECTED, IT WONT BE POSSIBLE TO MOVE THE SECOND RECT
+            if lowerOption then
+                player2Rect.y := player2Rect.y + PLAYER_SPEED
+            else
+                // IMPLEMENT BOT MOVEMENT
+                Writeln('1 player selected'); 
     end;
+
+    // Handling Enter key to select an option
+    if keyboardState[SDL_SCANCODE_RETURN] = 1 then
+    begin
+        if state = start then
+        begin
+            if lowerOption then
+            begin
+                //Two players
+                Writeln('2 players');
+            end
+            else
+            begin
+                //One player
+                Writeln('1 player');
+            end;
+            // CLEAN TEXT
+            toggleText;
+
+            state := game;
+        end;
+    end;
+
+    boundCheck;
 end;
 
 procedure renderStart();
@@ -143,6 +205,9 @@ end;
 procedure renderGame();
 begin
     // RECT 
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(renderer, @ball);
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, @player1Rect);
     SDL_RenderFillRect(renderer, @player2Rect);
@@ -186,18 +251,12 @@ begin
     font := TTF_OpenFont('./res/PixelatedEleganceRegular-ovyAA.ttf', 50);
     if font = nil then Halt;
 
-    textColor.r := 255;
-    textColor.g := 255;
-    textColor.b := 255;
-    textColor.a := 255;
-
-    for i := 0 to MAX_TEXTS - 1 do
-        textsVisible[i] := true;
-
+    toggleText;
     updateText(0, 'Um jogador', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 - 80, true);
     updateText(1, 'Dois jogadores', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 80, true);
     updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 - 80, true);
 
+    setRectangle(ball, BALL_SCALE, BALL_SCALE, WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2);
     setRectangle(player1Rect, PLAYER_WIDTH, PLAYER_HEIGHT, 0 + OFFSET_BORDER, playerMiddle);
     setRectangle(player2Rect, PLAYER_WIDTH, PLAYER_HEIGHT, WINDOW_WIDTH - OFFSET_BORDER, playerMiddle);
     setRectangle(border1Rect, PLAYER_WIDTH, WINDOW_HEIGHT, 0, 0);
