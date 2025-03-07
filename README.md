@@ -17,6 +17,19 @@ Contêm uma introdução a linguagem Pascal, além de um jogo Pong utilizando a 
 * Marco Rodrigo Costa
 
 ## Intruções
+### Instalação de dependências
+#### SDL2 
+
+Com um gerenciador de pacotes em sistemas `Linux/Unix`:
+```bash
+sudo apt-get install libsdl2-dev
+```
+#### SDL2_TTF 
+
+Com um gerenciador de pacotes em sistemas `Linux/Unix`:
+```bash
+sudo apt-get install libsdl2-ttf-dev
+```
 ### Compilar e Rodar
     fpc -Fu./lib/ main.pas
     ./main
