@@ -13,7 +13,9 @@ const
     PLAYER_WIDTH    = 15;
     PLAYER_HEIGHT   = 150;
     PLAYER_SPEED    = 5;
-    MAX_TEXTS = 3;
+    BOT_SPEED       = 3;
+    BALL_SCALE      = 10;
+    MAX_TEXTS       = 3;
 
 var
     sdlEvent: PSDL_Event;
@@ -31,11 +33,14 @@ var
     player2Rect: TSDL_Rect;
     border1Rect: TSDL_Rect;
     border2Rect: TSDL_Rect;
+    ball: TSDL_Rect;
     playerMiddle: integer = WINDOW_HEIGHT div 2 - PLAYER_HEIGHT div 2;
     state: windowState_t = start;
     lowerOption: boolean = false;
     lock: boolean = false;
     i: integer;
+    ballDx: integer = 5;
+    ballDy: integer = 5;
 
 procedure setRectangle(var rect: TSDL_Rect; width, height, xPos, yPos: integer);
 begin
@@ -49,6 +54,11 @@ procedure updateText(index: integer; text: string; xPos, yPos: integer; center: 
 begin
     if textTextures[index] <> nil then
         SDL_DestroyTexture(textTextures[index]);
+
+    textColor.r := 255;
+    textColor.g := 255;
+    textColor.b := 255;
+    textColor.a := 255;
 
     textSurface := TTF_RenderText_Solid(font, PChar(AnsiString(text)), textColor);
 
@@ -68,6 +78,45 @@ begin
     end;
 end;
 
+procedure toggleText();
+begin
+    for i := 0 to MAX_TEXTS - 1 do
+        textsVisible[i] := not textsVisible[i];
+end;
+
+procedure playerBoundCheck(var player: TSDL_Rect);
+begin
+    if (player.y <= 0) then player.y := 0;
+    if (player.y >= 570) then player.y := 570;
+end;
+
+procedure ballWallCollision(var ball: TSDL_Rect);
+begin
+    if (ball.y - ball.h <= 0) or (ball.y + ball.h >= WINDOW_HEIGHT) then
+        ballDy := -ballDy;
+end;
+
+procedure ballPlayerCollision(player: TSDL_Rect);
+begin
+    if (ball.x + ball.w >= player.x) and
+       (ball.x - ball.w <= player.x + player.w) and
+       (ball.y + ball.h >= player.y) and
+       (ball.y - ball.h <= player.y + player.h)
+    then
+    begin
+        ballDx := -ballDx;
+        ballDx := Round(ballDx * 1.05);
+        ballDy := Round(ballDy * 1.05);
+    end;
+end;
+
+procedure ballUpdate();
+begin
+    ballWallCollision(ball);
+    ballPlayerCollision(player1Rect);
+    ballPlayerCollision(player2Rect);
+end;
+
 procedure update();
 begin
     new(sdlEvent);
@@ -81,6 +130,12 @@ begin
                 lock := false;
         end;
     end;
+
+    // START BALL
+    if state = game then
+        ball.x := ball.x - ballDx;
+        ball.y := ball.y + ballDy;
+        //Writeln(ball.x);
 
     SDL_PumpEvents;
     
@@ -111,9 +166,13 @@ begin
             end;
         end
         else
-            player2Rect.y := player2Rect.y - PLAYER_SPEED;
+            // IF 1 PLAYER SELECTED, IT WONT BE POSSIBLE TO MOVE THE SECOND RECT
+            if lowerOption then
+                player2Rect.y := player2Rect.y - PLAYER_SPEED
+            else
+                // IMPLEMENT BOT MOVEMENT   
+                Writeln('1 player selected');
     end;
-
 
     if keyboardState[SDL_SCANCODE_DOWN] = 1 then
     begin
@@ -131,7 +190,42 @@ begin
             end;
         end
         else
-            player2Rect.y := player2Rect.y + PLAYER_SPEED;
+            // IF 1 PLAYER SELECTED, IT WONT BE POSSIBLE TO MOVE THE SECOND RECT
+            if lowerOption then
+                player2Rect.y := player2Rect.y + PLAYER_SPEED
+            else
+                // IMPLEMENT BOT MOVEMENT
+                Writeln('1 player selected'); 
+    end;
+
+    // Handling Enter key to select an option
+    if keyboardState[SDL_SCANCODE_RETURN] = 1 then
+    begin
+        if state = start then
+        begin
+            if lowerOption then
+            begin
+                //Two players
+                Writeln('2 players');
+            end
+            else
+            begin
+                //One player
+                Writeln('1 player');
+            end;
+            // CLEAN TEXT
+            toggleText;
+
+            state := game;
+        end;
+    end;
+
+    // PLAYERS AND BALL UPDATE/CHECK
+    if state = game then
+    begin
+        ballUpdate;
+        playerBoundCheck(player1Rect);
+        playerBoundCheck(player2Rect);
     end;
 end;
 
@@ -143,6 +237,9 @@ end;
 procedure renderGame();
 begin
     // RECT 
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderFillRect(renderer, @ball);
+
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, @player1Rect);
     SDL_RenderFillRect(renderer, @player2Rect);
@@ -186,18 +283,12 @@ begin
     font := TTF_OpenFont('./res/PixelatedEleganceRegular-ovyAA.ttf', 50);
     if font = nil then Halt;
 
-    textColor.r := 255;
-    textColor.g := 255;
-    textColor.b := 255;
-    textColor.a := 255;
-
-    for i := 0 to MAX_TEXTS - 1 do
-        textsVisible[i] := true;
-
+    toggleText;
     updateText(0, 'Um jogador', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 - 80, true);
     updateText(1, 'Dois jogadores', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 80, true);
     updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 - 80, true);
 
+    setRectangle(ball, BALL_SCALE, BALL_SCALE, WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2);
     setRectangle(player1Rect, PLAYER_WIDTH, PLAYER_HEIGHT, 0 + OFFSET_BORDER, playerMiddle);
     setRectangle(player2Rect, PLAYER_WIDTH, PLAYER_HEIGHT, WINDOW_WIDTH - OFFSET_BORDER, playerMiddle);
     setRectangle(border1Rect, PLAYER_WIDTH, WINDOW_HEIGHT, 0, 0);
