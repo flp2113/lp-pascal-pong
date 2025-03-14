@@ -1,8 +1,8 @@
 # Pascal Pong / Projeto de LP
 
-Projeto desenvolvido por alunos do 3º período do curso de Ciência da Computação na PUC Minas para a matéria de Linguagens de Programação (LP).
+Projeto desenvolvido por alunos do 3º período do curso de Ciência da Computação na PUC Minas para o seminário sobre a linguagem Pascal para a matéria de Linguagens de Programação (LP).
 
-Contêm uma introdução a linguagem Pascal, além de um jogo Pong utilizando a biblioteca SDL.
+Contêm uma introdução a linguagem Pascal, além de um simples jogo Pong utilizando a biblioteca SDL.
 
 ## Alunos integrantes da equipe
 
