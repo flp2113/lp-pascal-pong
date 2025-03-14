@@ -1,4 +1,4 @@
-# Pascal Pong / Projeto de LP
+# Pascal Pong / Introdução à linguagem Pascal
 
 Projeto desenvolvido por alunos do 3º período do curso de Ciência da Computação na PUC Minas para o seminário sobre a linguagem Pascal para a matéria de Linguagens de Programação (LP).
 
