@@ -3,7 +3,7 @@ program main;
 uses SysUtils, SDL2, SDL2_ttf;
 
 type
-    windowState_t = (start, game);
+    windowState_t = (start, game, endgame);
 
 const
     WINDOW_TITLE    = 'Pascal Pong';
@@ -12,10 +12,11 @@ const
     OFFSET_BORDER   = 100;
     PLAYER_WIDTH    = 15;
     PLAYER_HEIGHT   = 150;
-    PLAYER_SPEED    = 5;
-    BOT_SPEED       = 3;
+    PLAYER_SPEED    = 7;
+    BOT_SPEED       = 5;
     BALL_SCALE      = 10;
     MAX_TEXTS       = 3;
+    MAX_SCORE       = 1;
 
 var
     sdlEvent: PSDL_Event;
@@ -31,6 +32,8 @@ var
     keyboardState: PUInt8;
     player1Rect: TSDL_Rect;
     player2Rect: TSDL_Rect;
+    player1Score: integer = 0;
+    player2Score: integer = 0;
     border1Rect: TSDL_Rect;
     border2Rect: TSDL_Rect;
     ball: TSDL_Rect;
@@ -84,6 +87,42 @@ begin
         textsVisible[i] := not textsVisible[i];
 end;
 
+procedure updateScore();
+begin
+    updateText(0, IntToStr(player1Score), WINDOW_WIDTH div 2 - 25, WINDOW_HEIGHT div 2 - 200, true);
+    updateText(1, IntToStr(player2Score), WINDOW_WIDTH div 2 + 25, WINDOW_HEIGHT div 2 - 200, true);
+end;
+
+procedure checkGoal();
+begin
+    if (ball.x <= 0) then
+    begin
+        Inc(player2Score);
+        ball.x := WINDOW_WIDTH div 2;
+        ball.y := WINDOW_HEIGHT div 2;
+        ballDx := -5; 
+        ballDy := 5;
+        updateScore();
+    end
+    else if (ball.x >= WINDOW_WIDTH) then
+    begin
+        Inc(player1Score);
+        ball.x := WINDOW_WIDTH div 2;
+        ball.y := WINDOW_HEIGHT div 2;
+        ballDx := 5;
+        ballDy := 5;
+        updateScore();
+    end;
+end;
+
+procedure checkEndGame();
+begin
+    if (player1Score = MAX_SCORE) or (player2Score = MAX_SCORE) then
+        state := endgame;
+
+    Writeln(state);
+end;
+
 procedure playerBoundCheck(var player: TSDL_Rect);
 begin
     if (player.y <= 0) then player.y := 0;
@@ -105,8 +144,8 @@ begin
     then
     begin
         ballDx := -ballDx;
-        ballDx := Round(ballDx * 1.05);
-        ballDy := Round(ballDy * 1.05);
+        ballDx := Round(ballDx * 1.1);
+        ballDy := Round(ballDy * 1.1);
     end;
 end;
 
@@ -135,14 +174,13 @@ begin
     if state = game then
         ball.x := ball.x - ballDx;
         ball.y := ball.y + ballDy;
-        //Writeln(ball.x);
 
     SDL_PumpEvents;
     
     // EXIT BY PRESSING ESC
     if keyboardState[SDL_SCANCODE_ESCAPE] = 1 then
-        Running := False;
-
+        Running := false;
+        
     // W S
     if (state = game) and (keyboardState[SDL_SCANCODE_W] = 1) then
         player1Rect.y := player1Rect.y - PLAYER_SPEED;
@@ -205,16 +243,21 @@ begin
         begin
             if lowerOption then
             begin
-                //Two players
                 Writeln('2 players');
             end
             else
             begin
-                //One player
                 Writeln('1 player');
             end;
-            // CLEAN TEXT
+            // CLEAN TEXTS ARRAY
             toggleText;
+            for i := 0 to MAX_TEXTS - 1 do
+                SDL_DestroyTexture(textTextures[i]);
+
+            // SHOW SCORES
+            toggleText;
+            updateText(0, '0', WINDOW_WIDTH div 2 - 25, WINDOW_HEIGHT div 2 - 200, true);
+            updateText(1, '0', WINDOW_WIDTH div 2 + 25, WINDOW_HEIGHT div 2 - 200, true);
 
             state := game;
         end;
@@ -226,12 +269,30 @@ begin
         ballUpdate;
         playerBoundCheck(player1Rect);
         playerBoundCheck(player2Rect);
+        checkGoal;
+        checkEndGame;
     end;
 end;
 
 procedure renderStart();
 begin
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+end;
+
+procedure renderEnd();
+begin
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+
+    for i := 0 to MAX_TEXTS - 1 do    
+        SDL_DestroyTexture(textTextures[i]);
+
+    if player1Score = MAX_SCORE then
+        updateText(0, 'Jogador 1 venceu!', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 - 80, true)
+    else
+        updateText(0, 'Jogador 2 venceu!', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 - 80, true);
+
+    updateText(1, 'Deseja jogar novamente?', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 80, true);
+    updateText(2, 'Pressione ESC para fechar', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 160, true);
 end;
 
 procedure renderGame();
@@ -258,6 +319,7 @@ begin
     case state of
         start: renderStart();
         game: renderGame();
+        endgame: renderEnd();
     end;
 
     for i := 0 to MAX_TEXTS - 1 do
@@ -287,7 +349,7 @@ begin
     updateText(0, 'Um jogador', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 - 80, true);
     updateText(1, 'Dois jogadores', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 80, true);
     updateText(2, '>', WINDOW_WIDTH div 2 - 300, WINDOW_HEIGHT div 2 - 80, true);
-
+    
     setRectangle(ball, BALL_SCALE, BALL_SCALE, WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2);
     setRectangle(player1Rect, PLAYER_WIDTH, PLAYER_HEIGHT, 0 + OFFSET_BORDER, playerMiddle);
     setRectangle(player2Rect, PLAYER_WIDTH, PLAYER_HEIGHT, WINDOW_WIDTH - OFFSET_BORDER, playerMiddle);
