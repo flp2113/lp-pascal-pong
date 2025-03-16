@@ -16,7 +16,7 @@ const
     BOT_SPEED       = 5;
     BALL_SCALE      = 10;
     MAX_TEXTS       = 3;
-    MAX_SCORE       = 1;
+    MAX_SCORE       = 3;
 
 var
     sdlEvent: PSDL_Event;
@@ -119,8 +119,6 @@ procedure checkEndGame();
 begin
     if (player1Score = MAX_SCORE) or (player2Score = MAX_SCORE) then
         state := endgame;
-
-    Writeln(state);
 end;
 
 procedure playerBoundCheck(var player: TSDL_Rect);
@@ -138,9 +136,9 @@ end;
 procedure ballPlayerCollision(player: TSDL_Rect);
 begin
     if (ball.x + ball.w >= player.x) and
-       (ball.x - ball.w <= player.x + player.w) and
-       (ball.y + ball.h >= player.y) and
-       (ball.y - ball.h <= player.y + player.h)
+    (ball.x <= player.x + player.w) and
+    (ball.y + ball.h >= player.y) and
+    (ball.y <= player.y + player.h)
     then
     begin
         ballDx := -ballDx;
@@ -154,6 +152,21 @@ begin
     ballWallCollision(ball);
     ballPlayerCollision(player1Rect);
     ballPlayerCollision(player2Rect);
+end;
+
+procedure botMovement();
+var
+  targetY: integer;
+begin
+    targetY := ball.y;
+
+    if player2Rect.y + PLAYER_HEIGHT div 2 > targetY then
+        player2Rect.y := player2Rect.y - BOT_SPEED
+    else if player2Rect.y + PLAYER_HEIGHT div 2 < targetY then
+        player2Rect.y := player2Rect.y + BOT_SPEED;
+
+    if Random(100) < 10 then
+        player2Rect.y := player2Rect.y + (Random(2) - 1) * BOT_SPEED;
 end;
 
 procedure update();
@@ -170,14 +183,14 @@ begin
         end;
     end;
 
-    // START BALL
+    // Start ball
     if state = game then
         ball.x := ball.x - ballDx;
         ball.y := ball.y + ballDy;
 
     SDL_PumpEvents;
     
-    // EXIT BY PRESSING ESC
+    // Handling ESC
     if keyboardState[SDL_SCANCODE_ESCAPE] = 1 then
         Running := false;
         
@@ -187,7 +200,7 @@ begin
     if (state = game) and (keyboardState[SDL_SCANCODE_S] = 1) then
         player1Rect.y := player1Rect.y + PLAYER_SPEED;
 
-    // ARROW_UP ARROW_DOWN
+    // Arrow Up & Down
     if keyboardState[SDL_SCANCODE_UP] = 1 then
     begin
         if state = start then
@@ -204,12 +217,8 @@ begin
             end;
         end
         else
-            // IF 1 PLAYER SELECTED, IT WONT BE POSSIBLE TO MOVE THE SECOND RECT
             if lowerOption then
                 player2Rect.y := player2Rect.y - PLAYER_SPEED
-            else
-                // IMPLEMENT BOT MOVEMENT   
-                Writeln('1 player selected');
     end;
 
     if keyboardState[SDL_SCANCODE_DOWN] = 1 then
@@ -228,27 +237,15 @@ begin
             end;
         end
         else
-            // IF 1 PLAYER SELECTED, IT WONT BE POSSIBLE TO MOVE THE SECOND RECT
             if lowerOption then
                 player2Rect.y := player2Rect.y + PLAYER_SPEED
-            else
-                // IMPLEMENT BOT MOVEMENT
-                Writeln('1 player selected'); 
     end;
 
-    // Handling Enter key to select an option
+    // Handling ENTER key
     if keyboardState[SDL_SCANCODE_RETURN] = 1 then
     begin
         if state = start then
         begin
-            if lowerOption then
-            begin
-                Writeln('2 players');
-            end
-            else
-            begin
-                Writeln('1 player');
-            end;
             // CLEAN TEXTS ARRAY
             toggleText;
             for i := 0 to MAX_TEXTS - 1 do
@@ -266,6 +263,8 @@ begin
     // PLAYERS AND BALL UPDATE/CHECK
     if state = game then
     begin
+        if not lowerOption then
+            botMovement; 
         ballUpdate;
         playerBoundCheck(player1Rect);
         playerBoundCheck(player2Rect);
@@ -312,7 +311,6 @@ end;
 
 procedure render();
 begin
-    // BACKGROUND
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 
