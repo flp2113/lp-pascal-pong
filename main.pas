@@ -304,7 +304,7 @@ begin
     SDL_RenderFillRect(renderer, @player1Rect);
     SDL_RenderFillRect(renderer, @player2Rect);
 
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, @border1Rect);
     SDL_RenderFillRect(renderer, @border2Rect);
 end;
