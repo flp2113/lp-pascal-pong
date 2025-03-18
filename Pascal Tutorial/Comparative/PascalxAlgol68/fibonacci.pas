@@ -23,3 +23,4 @@ begin
     writeln;                             // Nova linha após o loop
     readln;                              // Aguarda a interação do usuário antes de finalizar
 end.
+
