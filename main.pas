@@ -129,7 +129,7 @@ end;
 
 procedure ballWallCollision(var ball: TSDL_Rect);
 begin
-    if (ball.y - ball.h <= 0) or (ball.y + ball.h >= WINDOW_HEIGHT) then
+    if (ball.y <= 0) or (ball.y + ball.h >= WINDOW_HEIGHT) then
         ballDy := -ballDy;
 end;
 
@@ -141,6 +141,11 @@ begin
     (ball.y <= player.y + player.h)
     then
     begin
+        if (ball.y < player.y + player.h div 4) then 
+            ballDy := -Abs(ballDy) 
+        else if (ball.y > player.y + (3 * player.h) div 4) then 
+            ballDy := Abs(ballDy);
+
         ballDx := -ballDx;
         ballDx := Round(ballDx * 1.1);
         ballDy := Round(ballDy * 1.1);
@@ -185,9 +190,11 @@ begin
 
     // Start ball
     if state = game then
+    begin
         ball.x := ball.x - ballDx;
         ball.y := ball.y + ballDy;
-
+    end;
+        
     SDL_PumpEvents;
     
     // Handling ESC
