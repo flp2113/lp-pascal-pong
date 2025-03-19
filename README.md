@@ -34,3 +34,4 @@ sudo apt-get install libsdl2-ttf-dev
     fpc -Fu./lib/ main.pas
     ./main
 
+![Pascal](/images/logo.gif)
