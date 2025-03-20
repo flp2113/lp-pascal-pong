@@ -1,7 +1,29 @@
+{*****************************************************}
+{                  PONG GAME                          }
+{-----------------------------------------------------}
+{ Desenvolvido por:  Caio Cesar,                      }
+{                    Diego Feitosa,                   }
+{                    Felipe Guerzoni,                 }
+{                    Guilherme Silva e                }
+{                    Mateus Diniz                     }
+{ Professor: Marco Rodrigo Costa                      }
+{ Disciplina: Linguagem de Programação                }
+{ Curso: Ciência da Computação - 3° Período           }
+{ Data: 19/03/2025                                    }
+{ Versão: 1.0.0                                       }
+{ Linguagem: Pascal com SDL(biblioteca)               }
+{ Descrição: Implementação do jogo Pong em Pascal.    }
+{ Recursos: Gráficos básicos, movimentação, colisões  }
+{ Linguagem: Pascal e SDL(biblioteca)                 }
+{*****************************************************}
+
+// Pascal Pong
 program main;
 
+// Import libraries
 uses SysUtils, SDL2, SDL2_ttf;
 
+// Defining types, constants and variables
 type
     windowState_t = (start, game, endgame);
 
@@ -45,6 +67,7 @@ var
     ballDx: integer = 5;
     ballDy: integer = 5;
 
+// Player
 procedure setRectangle(var rect: TSDL_Rect; width, height, xPos, yPos: integer);
 begin
     rect.w := width;
@@ -53,6 +76,7 @@ begin
     rect.y := yPos;
 end;
 
+// Menu text
 procedure updateText(index: integer; text: string; xPos, yPos: integer; center: boolean);
 begin
     if textTextures[index] <> nil then
@@ -93,6 +117,7 @@ begin
     updateText(1, IntToStr(player2Score), WINDOW_WIDTH div 2 + 25, WINDOW_HEIGHT div 2 - 200, true);
 end;
 
+// Checking point
 procedure checkGoal();
 begin
     if (ball.x <= 0) then
@@ -115,6 +140,7 @@ begin
     end;
 end;
 
+// Checking if game is end
 procedure checkEndGame();
 begin
     if (player1Score = MAX_SCORE) or (player2Score = MAX_SCORE) then
@@ -133,6 +159,7 @@ begin
         ballDy := -ballDy;
 end;
 
+// Ball collision with palyer 'hit'
 procedure ballPlayerCollision(player: TSDL_Rect);
 begin
     if (ball.x + ball.w >= player.x) and
@@ -159,6 +186,7 @@ begin
     ballPlayerCollision(player2Rect);
 end;
 
+// Movement of bot player
 procedure botMovement();
 var
   targetY: integer;
@@ -253,12 +281,12 @@ begin
     begin
         if state = start then
         begin
-            // CLEAN TEXTS ARRAY
+            // Clean texts arrays
             toggleText;
             for i := 0 to MAX_TEXTS - 1 do
                 SDL_DestroyTexture(textTextures[i]);
 
-            // SHOW SCORES
+            // Show scores
             toggleText;
             updateText(0, '0', WINDOW_WIDTH div 2 - 25, WINDOW_HEIGHT div 2 - 200, true);
             updateText(1, '0', WINDOW_WIDTH div 2 + 25, WINDOW_HEIGHT div 2 - 200, true);
@@ -267,7 +295,7 @@ begin
         end;
     end;
 
-    // PLAYERS AND BALL UPDATE/CHECK
+    // Players and ball update/check
     if state = game then
     begin
         if not lowerOption then
@@ -280,6 +308,7 @@ begin
     end;
 end;
 
+// Initializing game
 procedure renderStart();
 begin
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
@@ -301,9 +330,10 @@ begin
     updateText(2, 'Pressione ESC para fechar', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 160, true);
 end;
 
+// Rendering game
 procedure renderGame();
 begin
-    // RECT 
+    // Rect
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderFillRect(renderer, @ball);
 
@@ -337,6 +367,7 @@ begin
     SDL_Delay(16);
 end;
 
+// Main
 begin
     if SDL_Init(SDL_INIT_VIDEO) < 0 then Exit;
     if TTF_Init() < 0 then Exit;
@@ -350,6 +381,7 @@ begin
     font := TTF_OpenFont('./res/PixelatedEleganceRegular-ovyAA.ttf', 50);
     if font = nil then Halt;
 
+    // Chosing game mode
     toggleText;
     updateText(0, 'Um jogador', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 - 80, true);
     updateText(1, 'Dois jogadores', WINDOW_WIDTH div 2, WINDOW_HEIGHT div 2 + 80, true);
