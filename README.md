@@ -16,6 +16,14 @@ Contêm uma introdução a linguagem Pascal, além de um simples jogo Pong utili
 
 * Marco Rodrigo Costa
 
+## Disicplina:
+
+Linguagem de Programação
+
+## Curso:
+
+Ciência da Computação
+
 ## Intruções
 ### Instalação de dependências
 #### SDL2 
