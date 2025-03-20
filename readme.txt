@@ -3,6 +3,7 @@ Tema: Pascal
 
 Integrantes:
 Caio César
+Diego Feitosa
 Felipe Guerzoni
 Guilherme Silva
 Mateus Diniz
