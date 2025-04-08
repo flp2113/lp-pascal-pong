@@ -9,7 +9,7 @@
 - [Guilherme Soares Silva](./docs/appendices/apendice-GuilhermeSilva.pdf)
 - [Mateus Henrique Medeiros Diniz](./docs/appendices/apendice-MateusDiniz.pdf)
 
-## [Executar programa](./docs/references.md)
+## [Executar programa](./docs/instructions.md)
 
 ## [Sobre](./docs/documentation.md)
 
