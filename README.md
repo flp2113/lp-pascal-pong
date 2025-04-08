@@ -9,6 +9,8 @@
 - [Guilherme Soares Silva](./docs/appendices/apendice-GuilhermeSilva.pdf)
 - [Mateus Henrique Medeiros Diniz](./docs/appendices/apendice-MateusDiniz.pdf)
 
+## [Tutorial](./Pascal%20Tutorial/Basic%20Tutorial/main.pas)
+
 ## [Executar programa](./docs/instructions.md)
 
 ## [Sobre](./docs/documentation.md)
