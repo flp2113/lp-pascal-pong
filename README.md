@@ -1,72 +1,23 @@
-# Pascal Pong / Introdução à linguagem Pascal
+# Pascal Pong / Introdução à Linguagem Pascal
 
-Projeto desenvolvido por alunos do 3º período do curso de Ciência da Computação na PUC Minas para o seminário sobre a linguagem Pascal para a matéria de Linguagens de Programação (LP).
+## [Apresentação PDF](./docs/SlidesPascalProgrammingLanguage.pdf)
 
-Contêm uma introdução a linguagem Pascal, além de um simples jogo Pong utilizando a biblioteca SDL.
+## Apêndices
+- [Caio César Pereira](./docs/appendices/apendice-CaioCesarPereira.pdf)
+- [Diego Feitosa Ferreira dos Santos](./docs/appendices/apendice-DiegoFeitosa.pdf)
+- [Felipe Guerzoni Martins Florês](./docs/appendices/apendice-FelipeGuerzoni.pdf)
+- [Guilherme Soares Silva](./docs/appendices/apendice-GuilhermeSilva.pdf)
+- [Mateus Henrique Medeiros Diniz](./docs/appendices/apendice-MateusDiniz.pdf)
 
-## Alunos integrantes da equipe
+## [Executar programa](./docs/references.md)
 
-* Caio César Pereira
-* Diego Feitosa Ferreira dos Santos
-* Felipe Guerzoni Martins Flôres Maia
-* Guilherme Soares Silva
-* Mateus Henrique Medeiros Diniz
+## [Sobre](./docs/documentation.md)
 
-## Professor responsável
+## [Bibliografia](./docs/references.md)
 
-* Marco Rodrigo Costa
-
-## Disicplina:
-
-Linguagem de Programação
-
-## Curso:
-
-Ciência da Computação
-
-## Intruções
-### Instalação de dependências
-#### SDL2 
-
-Com um gerenciador de pacotes em sistemas `Linux/Unix`:
-```bash
-sudo apt-get install libsdl2-dev
-```
-#### SDL2_TTF 
-
-Com um gerenciador de pacotes em sistemas `Linux/Unix`:
-```bash
-sudo apt-get install libsdl2-ttf-dev
-```
-### Compilar e Rodar
-    fpc -Fu./lib/ main.pas
-    ./main
+<br>
 
 ![Pascal](/images/logo.gif)
 
 
-**References:**
 
-
-Free Pascal - Advanced open source Pascal compiler for Pascal and Object Pascal - Home Page. Disponível em: <https://www.freepascal.org/>.
-‌
-
-MATTHIAS. Free Pascal meets SDL. Disponível em: <https://www.freepascal-meets-sdl.net/>.
-
-
-WATT, D. A.; FINDLAY, W. Programming Language Design Concepts. [s.l.] John Wiley & Sons, 2004.
-‌
-
-Pascal - Quick Guide. Disponível em: <https://www.tutorialspoint.com/pascal/pascal_quick_guide.htm>.
-‌
-
-REISER, M.; WIRTH, N. Programming in Oberon. [s.l.] Addison-Wesley Longman, 1992.
-
-‌
-JENSEN, K.; WIRTH, N. PASCAL User Manual and Report. [s.l.] Springer, 2013.
-‌
-
-A Gentle Introduction to Haskell, Version 98. Disponível em: <https://www.haskell.org/tutorial/>.
-
-‌
-Code Examples. Disponível em: <https://oberon-lang.github.io/>. 
