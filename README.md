@@ -5,7 +5,7 @@
 ## Apêndices
 - [Caio César Pereira](./docs/appendices/apendice-CaioCesarPereira.pdf)
 - [Diego Feitosa Ferreira dos Santos](./docs/appendices/apendice-DiegoFeitosa.pdf)
-- [Felipe Guerzoni Martins Florês](./docs/appendices/apendice-FelipeGuerzoni.pdf)
+- [Felipe Guerzoni Martins Flôres Maia](./docs/appendices/apendice-FelipeGuerzoni.pdf)
 - [Guilherme Soares Silva](./docs/appendices/apendice-GuilhermeSilva.pdf)
 - [Mateus Henrique Medeiros Diniz](./docs/appendices/apendice-MateusDiniz.pdf)
 
@@ -20,6 +20,7 @@
 <br>
 
 ![Pascal](/images/logo.gif)
+
 
 
 
